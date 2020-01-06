@@ -18,4 +18,8 @@ server.use(express.json());
 server.use('/api/auth', authRoute, userRoute, farmerRoute);
 server.use('/api/farmers', produceRoute, orderRoute);
 
+server.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome to the Backend 🤘🏼'})
+})
+
 module.exports = server;
