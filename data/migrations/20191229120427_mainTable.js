@@ -1,13 +1,22 @@
 
 exports.up = function(knex) {
-  return knex.schema.createTable('farmers', farmers => {
-    farmers.increments();
+  return knex.schema.createTable('farmers', tbl => {
+    tbl.increments();
 
-    farmers
+    tbl
       .string('username', 128)
       .notNullable()
       .unique();
-    farmers.string('password', 128).notNullable();
+    tbl.string('password', 128).notNullable();
+  })
+  .createTable('users', tbl => {
+    tbl.increments();
+    
+    tbl
+      .string('username', 128)
+      .unique()
+      .notNullable();
+    tbl.string('password', 128).notNullable();
   })
 };
 
