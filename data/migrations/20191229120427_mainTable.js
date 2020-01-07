@@ -1,18 +1,6 @@
 
 exports.up = function(knex) {
   return knex.schema
-  .createTable('farmers', tbl => {
-    tbl.increments();
-    tbl
-      .string('username', 128)
-      .notNullable()
-      .unique();
-    tbl.string('password', 128).notNullable();
-    tbl.string("city", 128).notNullable();
-    tbl.string("state", 128).notNullable();
-    tbl.integer("zipCode", 5).notNullable();
-  })
-
   .createTable('users', tbl => {
     tbl.increments();
     tbl
@@ -37,6 +25,18 @@ exports.up = function(knex) {
     tbl.string('description');
   })
 
+  .createTable('farmers', tbl => {
+    tbl.increments();
+    tbl
+      .string('username', 128)
+      .notNullable()
+      .unique();
+    tbl.string('password', 128).notNullable();
+    tbl.string("city", 128).notNullable();
+    tbl.string("state", 128).notNullable();
+    tbl.integer("zipCode", 5).notNullable();
+  })
+
   .createTable('farmers_produce', tbl => {
     tbl.integer('sku').unique();
     tbl
@@ -46,7 +46,7 @@ exports.up = function(knex) {
       .notNullable()
       .unsigned()
       .onUpdate('CASCADE')
-      .onDelete('CASCADE');
+      .onDelete('RESTRICT');
     tbl
       .integer('produce_code')
       .references('produce_code')
@@ -56,7 +56,12 @@ exports.up = function(knex) {
       .integer('quantity')
       .unsigned()
       .notNullable();
-    tbl.primary([ 'farmer_id', 'produce_code']);
+    tbl.string('measurement').notNullable();
+    tbl
+      .float('price')
+      .unsigned()
+      .notNullable();
+    tbl.primary(['farmer_id', 'produce_code']);
   })
 
   .createTable('users_produce', tbl => {
@@ -67,7 +72,7 @@ exports.up = function(knex) {
       .notNullable()
       .unsigned()
       .onUpdate('CASCADE')
-      .onDelete('CASCADE');
+      .onDelete('RESTRICT');
     tbl
       .integer('sku')
       .references('sku')
@@ -75,7 +80,7 @@ exports.up = function(knex) {
       .notNullable()
       .unsigned()
       .onUpdate('CASCADE')
-      .onDelete('CASCADE');
+      .onDelete('RESTRICT');
     tbl
       .integer('quantity')
       .unsigned()
@@ -141,7 +146,7 @@ exports.up = function(knex) {
       .references('id')
       .inTable('state')
       .onUpdate('CASCADE')
-      .onDelete('CASCADE');
+      .onDelete('RESTRICT');
   })
 
 };
@@ -154,7 +159,7 @@ exports.down = function(knex) {
     .dropTableIfExists('orders')
     .dropTableIfExists('users_produce')
     .dropTableIfExists('farmers_produce')
+    .dropTableIfExists('farmers')
     .dropTableIfExists('produce')
-    .dropTableIfExists('users')
-    .dropTableIfExists('farmers');
+    .dropTableIfExists('users');
 };
