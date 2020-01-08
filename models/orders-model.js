@@ -7,23 +7,26 @@ module.exports = {
 };
 
 async function add(orderDetails, orderItems) {
-  const [orderResults] = await db('order')
+  const [orderResults] = await db('orders')
     .insert(orderDetails)
     .returning('*');
 
-  let newOrder 
+  let orderInfo; 
   for (let i = 0; i < orderItems.length; i++) {
-    newOrder = {
+    orderInfo = {
       quantity: orderItems[i].quantity,
-      produce_id: orderItems[i].item_id,
+      item_id: orderItems[i].item_id,
       farms_id: orderItems[i].farms_id,
-      orders: orderItems[i].orders_id,
+      orders_id: orderItems[i].orders_id,
       users_id: orderItems[i].users_id
     }
-    await db('order_items').insert(newOrder);
+    await db('order_items').insert(orderInfo);
   }
-  const [newOrderItems] = await findByCustomerId(orderDetails.users_id)
-  return {order_details: orderResults, orderItems: newOrderItems}
+  const [newOrderItems] = await findByCustomerId(orderDetails.user_id)
+  return Promise.resolve({
+    order_details: orderResults,
+    orderItems: newOrderItems,
+  });
 }
 
 function findByCustomerId(id) {
@@ -31,8 +34,14 @@ function findByCustomerId(id) {
     .where({ 'oi.users_id': id })
     .join('orders as o', 'o.id', 'oi.orders_id')
     .join('farms as f', 'f.id', 'oi.farms_id')
-    .join('produce as p', 'p.id', 'oi.produce_item')
-    .select('o.address', 'o.order_date', 'o.delivered', 'p.name', 'oi.quantity', 'f.name')
+    .join('produce_items as pi', 'pi.id', 'oi.item_id')
+    .select(
+      'o.address', 
+      'o.order_date', 
+      'o.delivered', 
+      'pi.name as item_bought', 
+      'oi.quantity', 
+      'f.name as seller')
 }
 
 function findByFarmId(id) {

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models/users-model.js');
 const Orders = require('../models/orders-model.js');
 const Farms = require('../models/farm-model.js');
+const uuidv1 = require('uuid/v1');
 
 router.get('/', (req, res) => {
   Users.find()
@@ -27,24 +28,24 @@ router.get('/:id', (req, res) => {
     })
 });
 
-router.get('/orders/:id', (req, res) => {
-  const { id } = req.params;
+// router.get('/orders/:id', (req, res) => {
+//   const { id } = req.params;
 
-  Orders.findByCustomerId(id)
-    .then(orders => {
-      orders.forEach(order => {
-        if (order.delivered) {
-          order.delivered = true;
-        } else {
-          order.delivered = false;
-        }
-      })
-      res.status(200).json({ order_history: orders })
-    })
-    .catch(error => {
-      res.status(500).json({ message: 'Could not fetch orders!' })
-    });
-});
+//   Orders.findByCustomerId(id)
+//     .then(orders => {
+//       orders.forEach(order => {
+//         if (order.delivered) {
+//           order.delivered = true;
+//         } else {
+//           order.delivered = false;
+//         }
+//       })
+//       res.status(200).json({ order_history: orders })
+//     })
+//     .catch(error => {
+//       res.status(500).json({ message: 'Could not fetch orders!' })
+//     });
+// });
 
 router.get('/farms/:cityId/:stateId', (req, res) => {
   const { cityId, stateId } = req.params;
@@ -59,15 +60,33 @@ router.get('/farms/:cityId/:stateId', (req, res) => {
   
 });
 
-router.post('/orders', (req, res) => {
-  const newOrder = req.body;
+router.post('/order/:id', (req, res) => {
+  const userId = req.params.id;
+  const orderId = uuidv1();
+  let orders = req.body;
+  let orderItems = orders.order_items;
+  
+  for (let i = 0; i < orderItems.length; i++) {
+    orderItems[i].orders_id = orderId
+    orderItems[i].users_id = Number(userId)
+  }
+  orders.id = orderId
+  orderDetails = {
+    "id": orders.id,
+    "address": orders.address,
+    "order_date": orders.order_date,
+    "delivered": orders.delivered,
+    "user_id": Number(userId)
+  }
 
-  Orders.add(newOrder)
+  Orders.add(orderDetails, orderItems)
     .then(order => {
       res.status(201).json(order)
     })
     .catch(error => {
-      res.status(500).json({ message: 'Failed to add new order' })
+      console.log(error);
+      
+      res.status(500).json({ error: error, message: 'Failed to add new order' })
     })
 });
 
