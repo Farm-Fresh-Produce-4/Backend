@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models/users-model.js');
 const Orders = require('../models/orders-model.js');
 const Farms = require('../models/farm-model.js');
+const City = require('../models/city-model.js');
 const uuidv1 = require('uuid/v1');
 
 router.get('/', (req, res) => {
@@ -47,6 +48,8 @@ router.get('/:id', (req, res) => {
 //     });
 // });
 
+
+// shows farms by city and state
 router.get('/farms/:cityId/:stateId', (req, res) => {
   const { cityId, stateId } = req.params;
 
@@ -60,6 +63,19 @@ router.get('/farms/:cityId/:stateId', (req, res) => {
   
 });
 
+// shopping by city
+router.get('/shop/:cityId', (req, res) => {
+  const { cityId } = req.params;
+  City.findProduceItems(cityId)
+    .then(items => {
+      res.status(200).json({ items: items })
+    })
+    .catch(error => {
+      res.status(500).json(error)
+    })
+
+})
+//posting an order
 router.post('/order/:id', (req, res) => {
   const userId = req.params.id;
   const orderId = uuidv1();

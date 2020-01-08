@@ -14,11 +14,11 @@ function find(farmId) {
 }
 
 async function add(item) {
-  const [ newItem ] = await db('produce_items')
+  const [ added ] = await db('produce_items')
     .insert(item)
     .returning('*')
 
-    return newItem;
+    return added;
 }
 
 async function update(item, id) {

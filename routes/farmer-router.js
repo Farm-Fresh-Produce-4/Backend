@@ -15,6 +15,7 @@ router.get('/:id', (req, res) => {
     })
 });
 
+// get produce
 router.get('/produce/:farmId', (req, res) => {
   const { farmId } = req.params;
   Produce.find(farmId)
@@ -25,6 +26,37 @@ router.get('/produce/:farmId', (req, res) => {
       res.status(500).json({ message: 'Unable to fetch list of produce items' })
     })
 })
+// add produce
+router.post('/produce/:farmId', (req, res) => {
+  const { farmId } = req.params;
+  let produceInfo = req.body;
+  produceInfo.farms_id = farmId;
+
+  if(produceInfo.name && produceInfo.quantity && produceInfo.price && produceInfo.category_id) {
+    Produce.add(produceInfo)
+      .then(added => {
+        res.status(201).json(added)
+      })
+      .catch(error => {
+        res.status(500).json({ message: 'Unable to add produce item' })
+      })
+  } else {
+    res.status(400).json({ message: 'Please fill out all required fields!' })
+  }
+})
+
+// delete produce
+router.delete('/produce/:itemId', (req, res) => {
+  const { itemId } = req.params;
+  Produce.remove(itemId)
+    .then(removed => {
+      res.status(200).json({ message: 'Produce item destroyed!' })
+    })
+    .catch(error => {
+      res.status(500).json(error)
+    })
+})
+
 
 router.get('/:farmId/orders', (req, res) => {
   const { farmId}  = req.params;
