@@ -2,8 +2,8 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const FarmerUser = require('../farmers/farmer-model.js');
-const Users = require('../users/users-model.js');
+const FarmerUser = require('../models/farmer-model.js');
+const Users = require('../models/users-model.js');
 
 // farmer register and login
 
