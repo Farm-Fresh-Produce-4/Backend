@@ -15,7 +15,7 @@ async function add(orderDetails, orderItems) {
   for (let i = 0; i < orderItems.length; i++) {
     newOrder = {
       quantity: orderItems[i].quantity,
-      produce_id: orderItems[i].produce_item,
+      produce_id: orderItems[i].item_id,
       farms_id: orderItems[i].farms_id,
       orders: orderItems[i].orders_id,
       users_id: orderItems[i].users_id
