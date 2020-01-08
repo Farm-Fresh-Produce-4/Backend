@@ -3,7 +3,7 @@ const db = require('../data/dbConfig.js');
 module.exports = {
   add,
   findByCustomerId,
-  findByFarmerId,
+  findByFarmId,
 };
 
 async function add(orderDetails, orderItems) {
@@ -35,11 +35,18 @@ function findByCustomerId(id) {
     .select('o.address', 'o.order_date', 'o.delivered', 'p.name', 'oi.quantity', 'f.name')
 }
 
-function findByFarmerId(id) {
-  return db('order_items as oi')
-    .where({ 'oi.farms_id': id })
-    .join('orders as o', 'o.id', 'oi.order_id')
-    .join('users as u', 'u.id', 'oi.users_id' )
-    .join('produce as p', 'p.id', 'oi.produce_item')
-    .select('o.address', 'o.order_date', 'o.delivered', 'p.name', 'oi.quantity', 'f.name')
+function findByFarmId(id) {
+  return db('order_items')
+    .where({ 'order_items.farms_id': id })
+    .join('orders', 'orders.id', 'order_items.orders_id')
+    .join('users', 'users.id', 'order_items.users_id' )
+    .join('produce_items', 'produce_items.id', 'order_items.item_id')
+    .select(
+      'orders.address', 
+      'orders.order_date', 
+      'orders.delivered', 
+      'produce_items.name', 
+      'order_items.quantity', 
+      'users.username'
+    )
 }
