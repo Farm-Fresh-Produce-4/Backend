@@ -3,16 +3,12 @@ exports.up = function(knex) {
   return knex.schema
     .createTable('city', tbl => {
       tbl.increments();
-      tbl.string('name')
-      .unique()
-      // .notNullable();
+      tbl.string('name').unique().notNullable();
     })
 
     .createTable('state', tbl => {
       tbl.increments();
-      tbl.string('name')
-      .unique()
-      // .notNullable();
+      tbl.string('name').unique().notNullable();
     })
 
     .createTable('farmers', tbl => {
