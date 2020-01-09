@@ -85,10 +85,6 @@ router.post('/order/:id', authenticate, (req, res) => {
   
   let orders = req.body;
   let orderItems = orders.order_items;
-  
-  console.log('order_items:', orderItems);
-  console.log('order_items.length:', orderItems.length);
-  console.log(req.body);
   for (let i = 0; i < orderItems.length; i++) {
     orderItems[i].orders_id = orderId
     orderItems[i].users_id = Number(userId)

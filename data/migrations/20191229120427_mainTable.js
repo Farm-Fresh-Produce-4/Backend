@@ -103,7 +103,7 @@ exports.up = function(knex) {
 
     .createTable('orders', tbl => {
       tbl
-        .integer('id')
+        .string('id')
         .notNullable()
         .unique()
         .primary();
