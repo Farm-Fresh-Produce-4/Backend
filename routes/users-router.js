@@ -104,6 +104,8 @@ router.post('/order/:id', authenticate, (req, res) => {
       res.status(201).json(order)
     })
     .catch(error => {
+      console.log(error, orderDetails, orderItems);
+      
       res.status(500).json({ error: error, message: 'Failed to add new order' })
     })
 });
