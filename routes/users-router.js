@@ -80,7 +80,7 @@ router.get('/shop/:cityId', authenticate, (req, res) => {
 //posting an order
 router.post('/order/:id', authenticate, (req, res) => {
   const userId = req.params.id;
-  const orderId = uuidv1();
+  const orderId = Math.floor(Math.random() * 1000000000);
   
   
   let orders = req.body;
