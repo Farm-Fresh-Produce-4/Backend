@@ -38,7 +38,7 @@ router.post('/produce/:farmId', (req, res) => {
         res.status(201).json(added)
       })
       .catch(error => {
-        res.status(500).json({ message: 'Unable to add produce item' })
+        res.status(500).json({ error, message: 'Unable to add produce item' })
       })
   } else {
     res.status(400).json({ message: 'Please fill out all required fields!' })
