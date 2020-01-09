@@ -42,6 +42,7 @@ function findByCustomerId(id) {
       'pi.name as item_bought', 
       'oi.quantity', 
       'f.name as seller')
+      .orderBy('o.order_date', 'desc');
 }
 
 function findByFarmId(id) {

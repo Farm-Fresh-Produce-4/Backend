@@ -3,6 +3,8 @@ const Farmers = require('../models/farmer-model.js');
 const Orders = require('../models/orders-model.js');
 const Produce = require('../models/produce-model.js');
 
+const authenticate = require('../auth/authenticate-middleware.js');
+
 router.get('/:id', (req, res) => {
   const { id } = req.params;
 
@@ -16,7 +18,7 @@ router.get('/:id', (req, res) => {
 });
 
 // get produce
-router.get('/produce/:farmId', (req, res) => {
+router.get('/produce/:farmId', authenticate, (req, res) => {
   const { farmId } = req.params;
   Produce.find(farmId)
     .then(produce => {
@@ -27,7 +29,7 @@ router.get('/produce/:farmId', (req, res) => {
     })
 })
 // add produce
-router.post('/produce/:farmId', (req, res) => {
+router.post('/produce/:farmId', authenticate, (req, res) => {
   const { farmId } = req.params;
   let produceInfo = req.body;
   produceInfo.farms_id = farmId;
@@ -38,7 +40,7 @@ router.post('/produce/:farmId', (req, res) => {
         res.status(201).json(added)
       })
       .catch(error => {
-        res.status(500).json({ message: 'Unable to add produce item' })
+        res.status(500).json({ error, message: 'Unable to add produce item' })
       })
   } else {
     res.status(400).json({ message: 'Please fill out all required fields!' })
@@ -46,7 +48,7 @@ router.post('/produce/:farmId', (req, res) => {
 })
 
 // delete produce
-router.delete('/produce/:itemId', (req, res) => {
+router.delete('/produce/:itemId', authenticate, (req, res) => {
   const { itemId } = req.params;
   Produce.remove(itemId)
     .then(removed => {
@@ -58,7 +60,7 @@ router.delete('/produce/:itemId', (req, res) => {
 })
 
 
-router.get('/:farmId/orders', (req, res) => {
+router.get('/:farmId/orders', authenticate, (req, res) => {
   const { farmId}  = req.params;
 
   Orders.findByFarmId(farmId)

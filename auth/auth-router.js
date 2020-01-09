@@ -22,25 +22,23 @@ router.post('/farmer/register', (req, res) => {
 });
 
 router.post('/farmer/login', (req, res) => {
-  let { username, password } = req.body;
+  const credentials = req.body;
 
-  FarmerUser.findBy({ username })
-    .first()
-    .then(user => {
-      if (user && bcrypt.compareSync(password, user.password)) {
-        const token = signToken(user)
-        res.status(200).json({
-          token,
-          message: `Welcome ${user.username}`,
-        })
-      } else {
-        res.status(401).json({ message: 'Invalid Credentials 💀' });
-      }
-    })
-    .catch(error => {
-      res.status(500).json(error);
-    })
-})
+  if(credentials.password && credentials.username) {
+    FarmerUser.findByUsername(credentials.username)
+      .then(user => {
+        if(user && bcrypt.compareSync(credentials.password, user.password)) {
+          const token = signToken(user, 'farmer')
+          res.status(200).json({ user: user, token: token })
+        } else {
+          res.status(401).json({ message: 'Invalid Credentials 💀' })
+        }
+      })
+  } else {
+    res.status(401).json({ message: 'Please provide the correcr credentials!' })
+  }
+});
+
 
 // consumer register and login
 

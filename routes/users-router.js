@@ -2,6 +2,8 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const authenticate = require('../auth/authenticate-middleware.js');
+
 const Users = require('../models/users-model.js');
 const Orders = require('../models/orders-model.js');
 const Farms = require('../models/farm-model.js');
@@ -50,7 +52,7 @@ router.get('/:id', (req, res) => {
 
 
 // shows farms by city and state
-router.get('/farms/:cityId/:stateId', (req, res) => {
+router.get('/farms/:cityId/:stateId', authenticate, (req, res) => {
   const { cityId, stateId } = req.params;
 
   Farms.findLocal(cityId, stateId)
@@ -64,7 +66,7 @@ router.get('/farms/:cityId/:stateId', (req, res) => {
 });
 
 // shopping by city
-router.get('/shop/:cityId', (req, res) => {
+router.get('/shop/:cityId', authenticate, (req, res) => {
   const { cityId } = req.params;
   City.findProduceItems(cityId)
     .then(items => {
@@ -76,16 +78,22 @@ router.get('/shop/:cityId', (req, res) => {
 
 })
 //posting an order
-router.post('/order/:id', (req, res) => {
+router.post('/order/:id', authenticate, (req, res) => {
   const userId = req.params.id;
   const orderId = uuidv1();
+  
+  
   let orders = req.body;
   let orderItems = orders.order_items;
   
+  console.log('order_items:', orderItems);
+  console.log('order_items.length:', orderItems.length);
+  console.log(req.body);
   for (let i = 0; i < orderItems.length; i++) {
     orderItems[i].orders_id = orderId
     orderItems[i].users_id = Number(userId)
   }
+  
   orders.id = orderId
   orderDetails = {
     "id": orders.id,
@@ -100,8 +108,6 @@ router.post('/order/:id', (req, res) => {
       res.status(201).json(order)
     })
     .catch(error => {
-      console.log(error);
-      
       res.status(500).json({ error: error, message: 'Failed to add new order' })
     })
 });
