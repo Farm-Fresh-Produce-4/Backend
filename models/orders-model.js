@@ -23,7 +23,10 @@ async function add(orderDetails, orderItems) {
     await db('order_items').insert(orderInfo);
   }
   const [newOrderItems] = await findByCustomerId(orderDetails.user_id)
-  return {order_details: orderResults, orderItems: newOrderItems}
+  return Promise.resolve({
+    order_details: orderResults,
+    orderItems: newOrderItems,
+  });
 }
 
 function findByCustomerId(id) {
