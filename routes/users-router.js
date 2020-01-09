@@ -79,13 +79,19 @@ router.get('/shop/:cityId', (req, res) => {
 router.post('/order/:id', (req, res) => {
   const userId = req.params.id;
   const orderId = uuidv1();
+  
+  
   let orders = req.body;
   let orderItems = orders.order_items;
   
+  console.log('order_items:', orderItems);
+  console.log('order_items.length:', orderItems.length);
+  console.log(req.body);
   for (let i = 0; i < orderItems.length; i++) {
     orderItems[i].orders_id = orderId
     orderItems[i].users_id = Number(userId)
   }
+  
   orders.id = orderId
   orderDetails = {
     "id": orders.id,
@@ -100,8 +106,6 @@ router.post('/order/:id', (req, res) => {
       res.status(201).json(order)
     })
     .catch(error => {
-      console.log(error);
-      
       res.status(500).json({ error: error, message: 'Failed to add new order' })
     })
 });
