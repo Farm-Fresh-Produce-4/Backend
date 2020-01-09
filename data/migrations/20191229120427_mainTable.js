@@ -59,20 +59,18 @@ exports.up = function(knex) {
         .unique()
         .notNullable();
       tbl.string('password', 128).notNullable();
-      // tbl
-      //   .integer('city_id')
-      //   .notNullable()
-      //   .references('id')
-      //   .inTable('city')
-      //   .onUpdate('CASCADE')
-      //   .onDelete('CASCADE');
-      // tbl
-      // .integer('state_id')
-      // .notNullable()
-      // .references('id')
-      // .inTable('state')
-      // .onUpdate('CASCADE')
-      // .onDelete('CASCADE');
+      tbl
+        .integer('city_id')
+        .references('id')
+        .inTable('city')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      tbl
+      .integer('state_id')
+      .references('id')
+      .inTable('state')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
     })
 
     .createTable('produce_category', tbl => {
