@@ -68,13 +68,13 @@ exports.up = function(knex) {
         .references('id')
         .inTable('city')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+        .onDelete('RESTRICT');
       tbl
         .integer('state_id')
         .references('id')
         .inTable('state')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+        .onDelete('RESTRICT');
     })
 
     .createTable('produce_category', tbl => {

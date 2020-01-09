@@ -87,7 +87,7 @@ function signToken(user) {
   const secret = process.env.JWT_SECRET || 'i love cookies';
 
   const options = {
-    expiresIn: '2 hours'
+    expiresIn: '5 hours'
   };
 
   return jwt.sign(payload, secret, options);
