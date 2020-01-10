@@ -47,6 +47,27 @@ router.post('/produce/:farmId', authenticate, (req, res) => {
   }
 })
 
+// edit produce item
+router.put('/produce/:farmId/:itemId', (req, res) => {
+  const { farmId, itemId } = req.params;
+  let updatedInfo = req.body;
+  updatedInfo.id = itemId;
+  updatedInfo.farms_id = farmId;
+
+  if(updatedInfo.name && updatedInfo.quantity && updatedInfo.price && updatedInfo.category_id) {
+    Produce.update(updatedInfo, itemId)
+      .then(updated => {
+        res.status(200).json(updated)
+      })
+      .catch(error => {
+        res.status(500).json(error)
+      })
+  } else {
+    res.status(400).json({ message: 'Please provide all required fields' })
+  }
+
+})
+
 // delete produce
 router.delete('/produce/:itemId', authenticate, (req, res) => {
   const { itemId } = req.params;
